@@ -1,5 +1,6 @@
 import 'package:avatar_course2_5_shop/core/extension/extensions.dart';
 import 'package:avatar_course2_5_shop/core/resources/manager_colors.dart';
+import 'package:avatar_course2_5_shop/core/storage/remote/firebase/controllers/fb_auth_controller.dart';
 import 'package:avatar_course2_5_shop/features/auth/data/data_source/auth_api_controller.dart';
 import 'package:avatar_course2_5_shop/route/routes.dart';
 import 'package:flutter/material.dart';
@@ -13,6 +14,7 @@ class AuthController extends GetxController with Helpers {
   late TextEditingController confirmPasswordTextEditingController;
   late TextEditingController phoneTextEditingController;
   AuthApiController apiController = AuthApiController();
+  FbAuthController fbAuthController = FbAuthController();
   String? emailError;
   String? passwordError;
   String? confirmPasswordError;
@@ -99,13 +101,24 @@ class AuthController extends GetxController with Helpers {
               ),
             );
           });
-      if (await apiController.register(
+      // if (await apiController.register(
+      //   email: emailTextEditingController.text.toString(),
+      //   password: passwordTextEditingController.text.toString(),
+      //   context: context,
+      //   name: userNameTextEditingController.text.toString(),
+      //   confirmPassword: confirmPasswordTextEditingController.text.toString(),
+      //   phone: phoneTextEditingController.text.toString(),
+      // )) {
+      //   showSnackBar(context: context, message: 'Register Successfully');
+      //   Get.back();
+      //   Get.offAllNamed(Routes.loginView);
+      // }
+
+      if (await fbAuthController.register(
         email: emailTextEditingController.text.toString(),
         password: passwordTextEditingController.text.toString(),
         context: context,
         name: userNameTextEditingController.text.toString(),
-        confirmPassword: confirmPasswordTextEditingController.text.toString(),
-        phone: phoneTextEditingController.text.toString(),
       )) {
         showSnackBar(context: context, message: 'Register Successfully');
         Get.back();
