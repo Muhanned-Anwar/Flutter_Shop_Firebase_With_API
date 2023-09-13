@@ -1,5 +1,6 @@
 import 'package:avatar_course2_5_shop/config/dependancy_injection.dart';
 import 'package:avatar_course2_5_shop/core/storage/local/database/shared_preferences/app_settings_shared_preferences.dart';
+import 'package:avatar_course2_5_shop/core/storage/remote/firebase/controllers/fb_auth_controller.dart';
 import 'package:avatar_course2_5_shop/features/home/data/data_source/home_api_controller.dart';
 import 'package:avatar_course2_5_shop/features/home/presentation/model/home_model.dart';
 import 'package:avatar_course2_5_shop/features/product_details/domain/model/product_details_model.dart';
@@ -26,12 +27,43 @@ class HomeController extends GetxController {
   List<HomeDataModel> discountedProducts = [];
   ProductDetailsUseCaseImplementation productDetailsUseCase =
       instance<ProductDetailsUseCaseImplementation>();
+  FbAuthController _fbAuthController = FbAuthController();
 
   @override
   void onInit() {
     super.onInit();
     readCategories();
     readHome();
+  }
+
+  performLogout() {
+    dialogRender(
+      context: Get.context!,
+      stateRenderType: StateRenderType.popUpLoadingState,
+      message: 'Loading...',
+      title: '',
+    );
+    _fbAuthController.logout();
+    Get.back();
+    if (!_fbAuthController.loggedIn()) {
+      dialogRender(
+        context: Get.context!,
+        stateRenderType: StateRenderType.popUpSuccessState,
+        message: 'Logout Successfully',
+        title: '',
+      );
+
+      Get.back();
+      Get.offAllNamed(Routes.authenticationView);
+    } else {
+      dialogRender(
+        context: Get.context!,
+        stateRenderType: StateRenderType.popUpErrorState,
+        message: 'Logout Failed',
+        title: '',
+      );
+      Get.back();
+    }
   }
 
   readCategories() async {

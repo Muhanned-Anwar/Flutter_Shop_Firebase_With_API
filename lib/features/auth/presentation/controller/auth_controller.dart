@@ -1,8 +1,10 @@
 import 'package:avatar_course2_5_shop/core/extension/extensions.dart';
 import 'package:avatar_course2_5_shop/core/resources/manager_colors.dart';
+import 'package:avatar_course2_5_shop/core/storage/remote/firebase/controllers/fb_auth_controller.dart';
 import 'package:avatar_course2_5_shop/features/auth/data/data_source/auth_api_controller.dart';
 import 'package:avatar_course2_5_shop/route/routes.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_state_render_dialog/flutter_state_render_dialog.dart';
 import 'package:get/get.dart';
 import '../../../../core/widgets/helpers.dart';
 
@@ -13,6 +15,7 @@ class AuthController extends GetxController with Helpers {
   late TextEditingController confirmPasswordTextEditingController;
   late TextEditingController phoneTextEditingController;
   AuthApiController apiController = AuthApiController();
+  FbAuthController fbAuthController = FbAuthController();
   String? emailError;
   String? passwordError;
   String? confirmPasswordError;
@@ -21,12 +24,12 @@ class AuthController extends GetxController with Helpers {
   bool showPassword = true;
   bool showConfirmPassword = true;
 
-  changePasswordVisibility(){
+  changePasswordVisibility() {
     showPassword = !showPassword;
     update();
   }
 
-  changeConfirmPasswordVisibility(){
+  changeConfirmPasswordVisibility() {
     showConfirmPassword = !showConfirmPassword;
     update();
   }
@@ -62,26 +65,35 @@ class AuthController extends GetxController with Helpers {
   performLogin(BuildContext context) async {
     resetErrors();
     if (checkData(context)) {
-      showDialog(
-          context: context,
-          builder: (context) {
-            return Center(
-              child: CircularProgressIndicator(
-                color: ManagerColors.primaryColor,
-                backgroundColor: ManagerColors.white,
-              ),
-            );
-          });
-      if (await apiController.login(
+      // showDialog(
+      //     context: context,
+      //     builder: (context) {
+      //       return Center(
+      //         child: CircularProgressIndicator(
+      //           color: ManagerColors.primaryColor,
+      //           backgroundColor: ManagerColors.white,
+      //         ),
+      //       );
+      //     });
+      // if (await apiController.login(
+      //   email: emailTextEditingController.text.toString(),
+      //   password: passwordTextEditingController.text.toString(),
+      //   context: context,
+      // )) {
+      //   showSnackBar(context: context, message: 'Login Successfully');
+      //   Get.back();
+      //   Get.offAllNamed(Routes.homeView);
+      // }
+      if (await fbAuthController.login(
+        context: context,
         email: emailTextEditingController.text.toString(),
         password: passwordTextEditingController.text.toString(),
-        context: context,
       )) {
-        showSnackBar(context: context, message: 'Login Successfully');
-        Get.back();
-        Get.offAllNamed(Routes.homeView);
+
+
+      }else {
+
       }
-      Get.back();
     }
     update();
   }
@@ -99,17 +111,15 @@ class AuthController extends GetxController with Helpers {
               ),
             );
           });
-      if (await apiController.register(
+      if (await fbAuthController.register(
         email: emailTextEditingController.text.toString(),
         password: passwordTextEditingController.text.toString(),
         context: context,
         name: userNameTextEditingController.text.toString(),
-        confirmPassword: confirmPasswordTextEditingController.text.toString(),
-        phone: phoneTextEditingController.text.toString(),
       )) {
         showSnackBar(context: context, message: 'Register Successfully');
         Get.back();
-        Get.offAllNamed(Routes.loginView);
+        Get.offAllNamed(Routes.authenticationView);
       }
       Get.back();
     }

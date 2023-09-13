@@ -128,6 +128,15 @@ class SliderDrawer extends StatelessWidget {
                     title: 'About',
                     onPressed: () {},
                   ),
+
+                  // Logout
+                  drawerItem(
+                    icon: Icons.logout,
+                    title: 'Logout',
+                    onPressed: () {
+                      controller.performLogout();
+                    },
+                  ),
                 ],
               ),
               const Spacer(),
